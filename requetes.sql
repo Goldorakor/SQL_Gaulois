@@ -221,7 +221,7 @@ question 13 :
 Nom du / des lieu(x) possédant le plus d'habitants, en dehors du village gaulois.
 
 
-mauvaise méthode ! en fait, j'avais oublié la ligne 238.
+mauvaise méthode ! en fait, j'avais oublié la ligne 238. --> ça fonctionne après le rajout de cette ligne manquante.
 on aurait eu une réponse quand même s'il existait (par un hasard) un village avec le même nb d'hab que le village gaulois.
 
 SELECT lieu.nom_lieu
@@ -388,6 +388,67 @@ Phrygien    id_casque = 22
 Hoplite     id_casque = 23
 
 il faut arriver à supprimer les trois derniers en écrivant notre requête.
+
+
+oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+DELETE table1
+FROM table1
+INNER JOIN table2 ON table1.cle_etrangere = table2.cle_primaire
+WHERE condition;
+
+exemple :
+DELETE personnage
+FROM personnage
+INNER JOIN lieu ON personnage.id_lieu = lieu.id_lieu
+WHERE lieu.nom_lieu = 'village romain';
+
+la solution est donc : 
+DELETE composer
+FROM composer
+INNER JOIN potion ON composer.id_potion = potion.id_potion
+INNER JOIN ingredient ON composer.id_ingredient = ingredient.id_ingredient
+WHERE (potion.nom_potion = 'Soupe' AND ingredient.nom_ingredient = 'Persil)
+--> les jointures permettent de retrouver la ligne avec les bons id-potion et id_ingredient en fonction des noms donnés dans l'énoncé.
+oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+
+DELETE casque
+FROM casque
+INNER JOIN type_casque ON casque.id_type_casque = type_casque.id_type_casque   (pour récupérer le bon id correspond aux casques de type 'Grec')
+FULL OUTER JOIN prendre_casque ON casque.id_casque = prendre_casque.id_casque
+WHERE ((type_casque.nom_type_casque = 'Grec') AND (prendre_casque.id_casque IS NULL))
+(chatGPT m'informe que MySQL ne prend pas en charge le FULL OUTER JOIN)
+
+DELETE casque
+FROM casque
+INNER JOIN type_casque ON casque.id_type_casque = type_casque.id_type_casque   (pour récupérer le bon id correspond aux casques de type 'Grec')
+LEFT JOIN prendre_casque ON casque.id_casque = prendre_casque.id_casque    (left car on veut compléter la colonne prendre_casque.id_casque avec des NULL si besoin)
+WHERE ((type_casque.nom_type_casque = 'Grec') AND (prendre_casque.id_casque IS NULL))
+(chatGPT m'informe que la syntaxe est correcte - je ne sais pas si le résultat est celui attendu)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
