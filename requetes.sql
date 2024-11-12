@@ -132,6 +132,34 @@ HAVING SUM(prendre_casque.qte) = (          (on va ajouter une condition)
 
 
 
+correction en suivant les consignes de Mickael :
+
+SELECT personnage.nom_personnage    (la colonne de noms qui s'ajoute à la table grâce à la jointure avec personnage)
+FROM prendre_casque
+INNER JOIN bataille ON prendre_casque.id_bataille = bataille.id_bataille
+INNER JOIN personnage ON prendre_casque.id_personnage = personnage.id_personnage
+WHERE bataille.nom_bataille = 'Bataille du village gaulois' (on ne veut que les persos qui prennent les casques à la bataille id_bataille = 1)
+GROUP BY personnage.nom_personnage  (quand un perso est cité plusieurs fois, on regroupe)
+HAVING SUM(prendre_casque.qte) >= ALL              (on va ajouter une condition) 
+        (
+        SELECT SUM(prendre_casque.qte) AS total_qte
+        FROM prendre_casque
+        INNER JOIN bataille ON prendre_casque.id_bataille = bataille.id_bataille
+        WHERE bataille.nom_bataille = 'Bataille du village gaulois'
+        GROUP BY prendre_casque.id_personnage
+    ) AS qte_par_personnage
+);
+
+
+
+
+
+
+
+
+
+
+
 
 en bas, c'est la valeur que doit avoir HAVING SUM(prendre_casque.qte) :
 on veut qu'il soit égal au max des casques récup par un personnage (ici : 60)
